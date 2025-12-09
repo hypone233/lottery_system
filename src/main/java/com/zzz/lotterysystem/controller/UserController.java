@@ -8,6 +8,7 @@ import com.zzz.lotterysystem.common.utils.JacksonUtil;
 import com.zzz.lotterysystem.controller.param.UserRegisterParam;
 import com.zzz.lotterysystem.controller.result.UserRegisterResult;
 import com.zzz.lotterysystem.service.UserService;
+import com.zzz.lotterysystem.service.VerificationCodeService;
 import com.zzz.lotterysystem.service.dto.UserRegisterDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private VerificationCodeService verificationCodeService;
     /**
      *注册
      */
@@ -38,6 +41,22 @@ public class UserController {
         return CommonResult.success(convertToUserRegisterResult(userRegisterDTO));
 
     }
+
+    /**
+     * 短信验证码发送
+     * @param phoneNumber
+     * @return
+     */
+    @RequestMapping("/verification-code/send")
+    public CommonResult<Boolean> senVerificationCode(String phoneNumber){
+        logger.info("senVerificationCode phoneNumber:{}", phoneNumber);
+        verificationCodeService.sendVerificationCode(phoneNumber);
+        return CommonResult.success(Boolean.TRUE);
+    }
+
+
+
+
 
     private UserRegisterResult convertToUserRegisterResult(UserRegisterDTO userRegisterDTO){
         UserRegisterResult result = new UserRegisterResult();
