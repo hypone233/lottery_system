@@ -5,10 +5,14 @@ import com.zzz.lotterysystem.common.errorcode.ControllerErrorCodeConstants;
 import com.zzz.lotterysystem.common.exception.ControllerException;
 import com.zzz.lotterysystem.common.pojo.CommonResult;
 import com.zzz.lotterysystem.common.utils.JacksonUtil;
+import com.zzz.lotterysystem.controller.param.ShortMessageLoginParam;
+import com.zzz.lotterysystem.controller.param.UserPasswordLoginParam;
 import com.zzz.lotterysystem.controller.param.UserRegisterParam;
+import com.zzz.lotterysystem.controller.result.UserLoginResult;
 import com.zzz.lotterysystem.controller.result.UserRegisterResult;
 import com.zzz.lotterysystem.service.UserService;
 import com.zzz.lotterysystem.service.VerificationCodeService;
+import com.zzz.lotterysystem.service.dto.UserLoginDTO;
 import com.zzz.lotterysystem.service.dto.UserRegisterDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +58,37 @@ public class UserController {
         return CommonResult.success(Boolean.TRUE);
     }
 
+    @RequestMapping("/password/login")
+    public CommonResult<UserLoginResult> userPasswordLogin(
+           @Validated @RequestBody UserPasswordLoginParam param){
+        logger.info("userPasswordLogin UserPasswordLoginParam:{}",
+                JacksonUtil.writeValueAsString(param));
+        UserLoginDTO userLoginDTO = userService.login(param);
+        return CommonResult.success(convertToUserLoginResult(userLoginDTO));
 
+    }
+
+    private UserLoginResult convertToUserLoginResult(UserLoginDTO userLoginDTO) {
+
+        if(null == userLoginDTO){
+            throw new ControllerException(ControllerErrorCodeConstants.LOGIN_ERROR);
+        }
+        UserLoginResult result = new UserLoginResult();
+        result.setToken(userLoginDTO.getToken());
+        result.setIdentity(userLoginDTO.getIdentity());
+        return result;
+    }
+
+    @RequestMapping("/password/login")
+    public CommonResult<UserLoginResult> shortMessageLogin(
+            @Validated @RequestBody ShortMessageLoginParam param){
+        logger.info("shortMessageLogin ShortMessageLoginParam:{}",
+                JacksonUtil.writeValueAsString(param));
+        UserLoginDTO userLoginDTO = userService.login(param);
+        return CommonResult.success(convertToUserLoginResult(userLoginDTO));
+
+
+    }
 
 
 
