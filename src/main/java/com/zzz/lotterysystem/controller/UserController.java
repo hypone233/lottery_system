@@ -68,18 +68,8 @@ public class UserController {
 
     }
 
-    private UserLoginResult convertToUserLoginResult(UserLoginDTO userLoginDTO) {
 
-        if(null == userLoginDTO){
-            throw new ControllerException(ControllerErrorCodeConstants.LOGIN_ERROR);
-        }
-        UserLoginResult result = new UserLoginResult();
-        result.setToken(userLoginDTO.getToken());
-        result.setIdentity(userLoginDTO.getIdentity());
-        return result;
-    }
-
-    @RequestMapping("/password/login")
+    @RequestMapping("/message/login")
     public CommonResult<UserLoginResult> shortMessageLogin(
             @Validated @RequestBody ShortMessageLoginParam param){
         logger.info("shortMessageLogin ShortMessageLoginParam:{}",
@@ -90,7 +80,16 @@ public class UserController {
 
     }
 
+    private UserLoginResult convertToUserLoginResult(UserLoginDTO userLoginDTO) {
 
+        if(null == userLoginDTO){
+            throw new ControllerException(ControllerErrorCodeConstants.LOGIN_ERROR);
+        }
+        UserLoginResult result = new UserLoginResult();
+        result.setToken(userLoginDTO.getToken());
+        result.setIdentity(userLoginDTO.getIdentity().name());
+        return result;
+    }
 
     private UserRegisterResult convertToUserRegisterResult(UserRegisterDTO userRegisterDTO){
         UserRegisterResult result = new UserRegisterResult();

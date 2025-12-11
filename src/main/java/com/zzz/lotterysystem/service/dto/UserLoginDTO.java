@@ -1,6 +1,7 @@
 package com.zzz.lotterysystem.service.dto;
 
 
+import com.zzz.lotterysystem.service.enums.UserIdentityEnum;
 import lombok.Data;
 
 @Data
@@ -14,6 +15,6 @@ public class UserLoginDTO {
     /**
      * 登录人员身份
      */
-    private String identity;
+    private UserIdentityEnum identity;
 
 }

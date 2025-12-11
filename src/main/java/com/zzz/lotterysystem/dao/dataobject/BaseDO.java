@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.Date;
 @Data
-public class BaseDo implements Serializable {
+public class BaseDO implements Serializable {
 
     /**
      * 主键
