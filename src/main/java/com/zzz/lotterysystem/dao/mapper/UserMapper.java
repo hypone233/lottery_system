@@ -4,6 +4,8 @@ import com.zzz.lotterysystem.dao.dataobject.Encrypt;
 import com.zzz.lotterysystem.dao.dataobject.UserDO;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
+
 @Mapper
 public interface UserMapper {
 
@@ -25,6 +27,16 @@ public interface UserMapper {
 
     @Select("select * from user where email = #{email}")
     UserDO selectByMail(@Param("email") String email);
+
     @Select("select * from user where phone_number = #{phoneNumber}")
     UserDO selectByPhoneNumber(@Param("phoneNumber") Encrypt phoneNumber);
+
+    @Select("<script>" +
+            " select * from user " +
+            " <if test=\"identity!=null\"> " +
+            " where identity = #{identity} " +
+            " </if>" +
+            " order by id desc" +
+            " </script>")
+    List<UserDO> selectUserListByIdentity(@Param("identity") String identity);
 }

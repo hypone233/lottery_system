@@ -14,6 +14,7 @@ import com.zzz.lotterysystem.dao.dataobject.UserDO;
 import com.zzz.lotterysystem.dao.mapper.UserMapper;
 import com.zzz.lotterysystem.service.UserService;
 import com.zzz.lotterysystem.service.VerificationCodeService;
+import com.zzz.lotterysystem.service.dto.UserDTO;
 import com.zzz.lotterysystem.service.dto.UserLoginDTO;
 import com.zzz.lotterysystem.service.dto.UserRegisterDTO;
 import com.zzz.lotterysystem.service.enums.UserIdentityEnum;
@@ -22,7 +23,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class  UserServiceImpl implements UserService {
@@ -112,6 +115,24 @@ public class  UserServiceImpl implements UserService {
 
 
         return userLoginDTO;
+    }
+
+    @Override
+    public List<UserDTO> findUserInfo(UserIdentityEnum identity) {
+        String identityString = null == identity ? null : identity.name();
+
+        List<UserDO> userDOList = userMapper.selectUserListByIdentity(identityString);
+        List<UserDTO> userDTOList = userDOList.stream()
+                .map(userDO -> {
+                    UserDTO userDTO = new UserDTO();
+                    userDTO.setUserId(userDO.getId());
+                    userDTO.setUserName(userDO.getUserName());
+                    userDTO.setEmail(userDO.getEmail());
+                    userDTO.setPhoneNumber(userDO.getPhoneNumber().getValue());
+                    userDTO.setIdentity(UserIdentityEnum.forName(userDO.getIdentity()));
+                    return userDTO;
+                }).collect(Collectors.toList());
+        return userDTOList;
     }
 
     /**

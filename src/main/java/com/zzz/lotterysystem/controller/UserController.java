@@ -8,20 +8,27 @@ import com.zzz.lotterysystem.common.utils.JacksonUtil;
 import com.zzz.lotterysystem.controller.param.ShortMessageLoginParam;
 import com.zzz.lotterysystem.controller.param.UserPasswordLoginParam;
 import com.zzz.lotterysystem.controller.param.UserRegisterParam;
+import com.zzz.lotterysystem.controller.result.BaseUserInfoResult;
 import com.zzz.lotterysystem.controller.result.UserLoginResult;
 import com.zzz.lotterysystem.controller.result.UserRegisterResult;
 import com.zzz.lotterysystem.service.UserService;
 import com.zzz.lotterysystem.service.VerificationCodeService;
+import com.zzz.lotterysystem.service.dto.UserDTO;
 import com.zzz.lotterysystem.service.dto.UserLoginDTO;
 import com.zzz.lotterysystem.service.dto.UserRegisterDTO;
+import com.zzz.lotterysystem.service.enums.UserIdentityEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -79,6 +86,29 @@ public class UserController {
 
 
     }
+
+    @RequestMapping("/base-user/find-list")
+    public CommonResult<List<BaseUserInfoResult>> findBaseUserInfo(String identity) {
+        logger.info("BaseUserInfoResult identity:{}", identity);
+        List<UserDTO> userDTOList = userService.findUserInfo(
+                UserIdentityEnum.forName(identity));
+        return CommonResult.success(converToList(userDTOList));
+    }
+
+    private List<BaseUserInfoResult> converToList(List<UserDTO> userDTOList) {
+        if(CollectionUtils.isEmpty(userDTOList)){
+            return Arrays.asList();
+        }
+        return  userDTOList.stream()
+                .map(userDTO -> {
+                    BaseUserInfoResult result = new BaseUserInfoResult();
+                    result.setUserId(userDTO.getUserId());
+                    result.setUserName(userDTO.getUserName());
+                    result.setIdentity(userDTO.getIdentity().name());
+                    return result;
+                }).collect(Collectors.toList());
+    }
+
 
     private UserLoginResult convertToUserLoginResult(UserLoginDTO userLoginDTO) {
 
