@@ -17,5 +17,9 @@ public interface ServiceErrorCodeConstants {
     ErrorCode VERIFICATION_CODE_ERROR = new ErrorCode(111,"验证码校验失败");
     //图片错误码
     ErrorCode PIC_UPLOAD_ERROR = new ErrorCode(500,"图片上传失败");
-
+    //活动模块错误码
+    ErrorCode CREATE_ACTIVITY_INFO_IS_EMPTY = new ErrorCode(300,"创建活动信息为空");
+    ErrorCode ACTIVITY_USER_ERROR = new ErrorCode(301,"活动关联人员异常");
+    ErrorCode ACTIVITY_PRIZE_ERROR = new ErrorCode(302,"活动关联奖品异常");
+    ErrorCode USER_PRIZE_AMOUNT_ERROR = new ErrorCode(303,"活动关联奖品或人员数量设置异常");
 }
