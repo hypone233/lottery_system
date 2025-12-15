@@ -1,6 +1,9 @@
 package com.zzz.lotterysystem.service;
 
 import com.zzz.lotterysystem.controller.param.CreatePrizeParam;
+import com.zzz.lotterysystem.controller.param.PageParam;
+import com.zzz.lotterysystem.service.dto.PageListDTO;
+import com.zzz.lotterysystem.service.dto.PrizeDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface PrizeService {
@@ -13,4 +16,11 @@ public interface PrizeService {
      */
     Long createPrize(CreatePrizeParam param, MultipartFile picFile);
 
+    /**
+     * 翻页查询列表
+     *
+     * @param param
+     * @return
+     */
+    PageListDTO<PrizeDTO> findPrizeList(PageParam param);
 }

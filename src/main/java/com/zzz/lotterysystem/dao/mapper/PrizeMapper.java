@@ -1,9 +1,10 @@
 package com.zzz.lotterysystem.dao.mapper;
 
 import com.zzz.lotterysystem.dao.dataobject.PrizeDO;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.*;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Mapper
 public interface PrizeMapper {
@@ -11,4 +12,10 @@ public interface PrizeMapper {
             " values (#{name}, #{imageUrl},#{price},#{description})")
     @Options(useGeneratedKeys = true,keyProperty = "id",keyColumn = "id")
     int insert(PrizeDO prizeDO);
+
+    @Select("select count(1) from prize")
+    int count();
+    @Select("select * from prize order by id desc limit #{offset}, #{pageSize}")
+    List<PrizeDO> selectPrizeList(@Param("offset") Integer offset,
+                                   @Param("pageSize") Integer pageSize);
 }
