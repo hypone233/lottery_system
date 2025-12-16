@@ -25,7 +25,7 @@ public interface PrizeMapper {
             " <foreach item='item' collection='items' open='(' separator=',' close=')'>" +
             " #{item}" +
             " </foreach>" +
-            " </script")
+            " </script>")
     List<Long> selectExistByIds(@Param("items") List<Long> ids);
 
     @Select("<script>" +
@@ -34,6 +34,6 @@ public interface PrizeMapper {
             " <foreach item='item' collection='items' open='(' separator=',' close=')'>" +
             " #{item}" +
             " </foreach>" +
-            " </script")
+            " </script>")
     List<PrizeDO> batchSelectbyIds(@Param("items") List<Long> ids);
 }

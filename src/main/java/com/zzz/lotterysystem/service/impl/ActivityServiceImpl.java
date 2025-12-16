@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mapping.model.SpELExpressionEvaluator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -162,10 +163,13 @@ public class ActivityServiceImpl implements ActivityService {
         }
         try{
             String str = redisUtil.get(ACTIVITY_PREFIX + activityId);
-            ActivityDetailDTO detailDTO = JacksonUtil.readValue(str,ActivityDetailDTO.class);
-            return detailDTO;
+            if(!StringUtils.hasText(str)){
+                logger.warn("获取缓存活动数据为空! key={}",ACTIVITY_PREFIX + activityId);
+                return null;
+            }
+            return JacksonUtil.readValue(str,ActivityDetailDTO.class);
         } catch (Exception e){
-            logger.error("从缓存中获取活动信息异常，activityId={}",activityId,e);
+            logger.error("从缓存中获取活动信息异常，key={}",ACTIVITY_PREFIX + activityId,e);
             return null;
         }
 

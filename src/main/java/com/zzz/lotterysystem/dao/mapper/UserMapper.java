@@ -33,11 +33,13 @@ public interface UserMapper {
 
     @Select("<script>" +
             " select * from user " +
-            " <if test=\"identity!=null\"> " +
-            " where identity = #{identity} " +
-            " </if>" +
-            " order by id desc" +
-            " </script>")
+            " <where> " +
+            "   <if test='identity != null'> " +
+            "     identity = #{identity} " +
+            "   </if> " +
+            " </where> " +
+            " order by id desc " +
+            "</script>")
     List<UserDO> selectUserListByIdentity(@Param("identity") String identity);
     @Select("<script>" +
             " select id from user" +
@@ -45,6 +47,6 @@ public interface UserMapper {
             " <foreach item='item' collection='items' open='(' separator=',' close=')'>" +
             " #{item}" +
             " </foreach>" +
-            " </script")
+            " </script>")
     List<Long> selectExistById(@Param("items") List<Long> id);
 }
