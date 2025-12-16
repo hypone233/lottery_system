@@ -22,4 +22,6 @@ public interface ServiceErrorCodeConstants {
     ErrorCode ACTIVITY_USER_ERROR = new ErrorCode(301,"活动关联人员异常");
     ErrorCode ACTIVITY_PRIZE_ERROR = new ErrorCode(302,"活动关联奖品异常");
     ErrorCode USER_PRIZE_AMOUNT_ERROR = new ErrorCode(303,"活动关联奖品或人员数量设置异常");
+    ErrorCode ACTIVITY_PRIZE_TIERS_ERROR = new ErrorCode(304,"活动奖品等级设置错误");
+
 }
