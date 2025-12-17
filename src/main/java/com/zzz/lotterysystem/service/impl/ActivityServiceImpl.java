@@ -7,14 +7,17 @@ import com.zzz.lotterysystem.common.utils.RedisUtil;
 import com.zzz.lotterysystem.controller.param.CreateActivityParam;
 import com.zzz.lotterysystem.controller.param.CreatePrizeByActivityParam;
 import com.zzz.lotterysystem.controller.param.CreateUserByActivityParam;
+import com.zzz.lotterysystem.controller.param.PageParam;
 import com.zzz.lotterysystem.dao.dataobject.ActivityDO;
 import com.zzz.lotterysystem.dao.dataobject.ActivityPrizeDO;
 import com.zzz.lotterysystem.dao.dataobject.ActivityUserDO;
 import com.zzz.lotterysystem.dao.dataobject.PrizeDO;
 import com.zzz.lotterysystem.dao.mapper.*;
 import com.zzz.lotterysystem.service.ActivityService;
+import com.zzz.lotterysystem.service.dto.ActivityDTO;
 import com.zzz.lotterysystem.service.dto.ActivityDetailDTO;
 import com.zzz.lotterysystem.service.dto.CreateActivityDTO;
+import com.zzz.lotterysystem.service.dto.PageListDTO;
 import com.zzz.lotterysystem.service.enums.ActivityPrizeStatusEnum;
 import com.zzz.lotterysystem.service.enums.ActivityPrizeTiersEnum;
 import com.zzz.lotterysystem.service.enums.ActivityStatusEnum;
@@ -25,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mapping.model.SpELExpressionEvaluator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -126,6 +130,59 @@ public class ActivityServiceImpl implements ActivityService {
         CreateActivityDTO createActivityDTO = new CreateActivityDTO();
         createActivityDTO.setActivityID(activityDO.getId());
         return createActivityDTO;
+
+    }
+
+    @Override
+    public PageListDTO<ActivityDTO> findActivityList(PageParam param) {
+        //获取总量
+        int total = activityMapper.count();
+
+        //获取当前页列表
+        List<ActivityDO> activityDOList=activityMapper.selectActivityList(param.offset(),param.getPageSize());
+        List<ActivityDTO> activityDTOList = activityDOList.stream()
+                .map( activityDO -> {
+                    ActivityDTO activityDTO = new ActivityDTO();
+                    activityDTO.setActivityId(activityDO.getId());
+                    activityDTO.setActivityName(activityDO.getActivityName());
+                    activityDTO.setDescription(activityDO.getDescription());
+                    activityDTO.setStatus(ActivityStatusEnum.fromName(activityDO.getStatus()));
+                    return activityDTO;
+                }).collect(Collectors.toList());
+
+        return new PageListDTO<>(activityDTOList,total);
+    }
+
+    @Override
+    public ActivityDetailDTO getActivityDetail(Long activityId) {
+        if(null == activityId){
+            logger.warn("查询活动详细信息失败，activityId为空");
+        }
+        //查redis
+        ActivityDetailDTO detailDTO = getActivityFromCache(activityId);
+        if(null != detailDTO){
+            logger.info("查询活动详细信息成功 detailDTO={}",
+                    JacksonUtil.writeValueAsString(detailDTO));
+            return detailDTO;
+        }
+        //如果不存在，通过表查询
+
+        ActivityDO aDO = activityMapper.selectById(activityId);
+
+        List<ActivityPrizeDO> apDOList = activityPrizeMapper.selectActivityId(activityId);
+
+        List<ActivityUserDO> auDOList = activityUserMapper.selectByActivityId(activityId);
+
+        List<Long> prizeIds = apDOList.stream()
+                .map(ActivityPrizeDO::getPrizeId)
+                .collect(Collectors.toList());
+        List<PrizeDO> pDOList = prizeMapper.batchSelectbyIds(prizeIds);
+        //整合活动信息，存放到redis
+        detailDTO = convertToactivityDetailDTO(aDO,auDOList,pDOList,apDOList);
+        cacheActivity(detailDTO);
+
+        //返回
+        return detailDTO;
 
     }
 
@@ -241,6 +298,10 @@ public class ActivityServiceImpl implements ActivityService {
                 .collect(Collectors.toList());
 
         List<Long> existUserIds = userMapper.selectExistById(userIds);
+        if(CollectionUtils.isEmpty(existUserIds)){
+            throw new ServiceException(ServiceErrorCodeConstants.ACTIVITY_USER_ERROR);
+
+        }
         userIds.forEach(id ->{
             if(!existUserIds.contains(id)){
                 throw new ServiceException(ServiceErrorCodeConstants.ACTIVITY_USER_ERROR);
@@ -255,6 +316,10 @@ public class ActivityServiceImpl implements ActivityService {
                 .distinct()
                 .collect(Collectors.toList());
         List<Long> existPrizeIds = prizeMapper.selectExistByIds(prizeIds);
+        if(CollectionUtils.isEmpty(existPrizeIds)){
+            throw new ServiceException(ServiceErrorCodeConstants.ACTIVITY_PRIZE_ERROR);
+
+        }
         prizeIds.forEach(id ->{
             if(!existPrizeIds.contains(id)){
                 throw new ServiceException(ServiceErrorCodeConstants.ACTIVITY_PRIZE_ERROR);

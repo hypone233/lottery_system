@@ -1,9 +1,10 @@
 package com.zzz.lotterysystem.dao.mapper;
 
 import com.zzz.lotterysystem.dao.dataobject.ActivityDO;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
+import com.zzz.lotterysystem.dao.dataobject.PrizeDO;
+import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 @Mapper
 public interface ActivityMapper {
@@ -13,5 +14,13 @@ public interface ActivityMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id",keyColumn = "id")
     int insert(ActivityDO activityDO);
 
+    @Select("select count(1) from activity")
+    int count();
 
+    @Select("select * from activity order by id desc limit #{offset}, #{pageSize}")
+    List<ActivityDO> selectActivityList(@Param("offset") Integer offset,
+                                  @Param("pageSize") Integer pageSize);
+
+    @Select("select * from activity where id = #{id}")
+    ActivityDO selectById(@Param("id") Long id);
 }
