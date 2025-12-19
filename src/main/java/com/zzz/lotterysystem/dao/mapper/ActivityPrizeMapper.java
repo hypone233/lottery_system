@@ -1,6 +1,7 @@
 package com.zzz.lotterysystem.dao.mapper;
 
 import com.zzz.lotterysystem.dao.dataobject.ActivityPrizeDO;
+import jakarta.validation.constraints.NotNull;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -19,4 +20,8 @@ public interface ActivityPrizeMapper {
 
     @Select("select * from activity_prize where acticity_id = #{activityId}")
     List<ActivityPrizeDO> selectActivityId(Long activityId);
+
+    @Select("select * from activity_prize where acticity_id = #{activityId} and prize_id = #{prizeId}")
+    ActivityPrizeDO selectByAPId(@Param("activityId") Long activityId,
+                                 @Param("prizeId") Long prizeId);
 }

@@ -31,4 +31,11 @@ public interface ActivityService {
      * @return
      */
     ActivityDetailDTO getActivityDetail(Long activityId);
+
+    /**
+     * 缓存活动详细信息（读取表数据）
+     * @param activityId
+     */
+    void cacheActivity(Long activityId);
+
 }

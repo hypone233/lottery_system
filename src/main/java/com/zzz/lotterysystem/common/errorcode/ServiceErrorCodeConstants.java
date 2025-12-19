@@ -23,5 +23,14 @@ public interface ServiceErrorCodeConstants {
     ErrorCode ACTIVITY_PRIZE_ERROR = new ErrorCode(302,"活动关联奖品异常");
     ErrorCode USER_PRIZE_AMOUNT_ERROR = new ErrorCode(303,"活动关联奖品或人员数量设置异常");
     ErrorCode ACTIVITY_PRIZE_TIERS_ERROR = new ErrorCode(304,"活动奖品等级设置错误");
+    ErrorCode ACTIVITY_STATUS_CONVERT_ERROR = new ErrorCode(305,"活动相关状态转换失败");
+
+    //抽奖错误码
+    ErrorCode ACTIVITY_OR_PRIZE_IS_EMPTY = new ErrorCode(400,"抽奖活动或关联奖品不存在");
+    ErrorCode ACTIVITY_COMPLETED = new ErrorCode(401,"抽奖活动已完成");
+    ErrorCode ACTIVITY_PRIZE_COMPLETED= new ErrorCode(402,"当前奖品已被抽取");
+    ErrorCode WINNER_PRIZE_AMOUNT_ERROR = new ErrorCode(403,"中奖人数与奖品设置数不一致");
+
+
 
 }

@@ -14,4 +14,6 @@ public interface DrawPrizeService {
      */
     void drawPrize(DrawPrizeParam param);
 
+    void checkDrawPrizeParam(DrawPrizeParam param);
+
 }
