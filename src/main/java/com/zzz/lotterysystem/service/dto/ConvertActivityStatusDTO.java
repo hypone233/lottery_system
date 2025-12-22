@@ -35,7 +35,7 @@ public class ConvertActivityStatusDTO {
     private List<Long> userIds;
 
     /**
-     * 奖品目标状态
+     * 人员目标状态
      */
     private ActivityUserStatusEnum targetUserStatus;
 

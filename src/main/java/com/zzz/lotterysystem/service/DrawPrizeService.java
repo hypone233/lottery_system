@@ -3,7 +3,10 @@ package com.zzz.lotterysystem.service;
 
 import com.zzz.lotterysystem.controller.param.DrawPrizeParam;
 
+import com.zzz.lotterysystem.dao.dataobject.WinningRecordDO;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public interface DrawPrizeService {
@@ -14,6 +17,11 @@ public interface DrawPrizeService {
      */
     void drawPrize(DrawPrizeParam param);
 
+
+
     void checkDrawPrizeParam(DrawPrizeParam param);
 
+
+
+    List<WinningRecordDO> saveWinnerRecords(DrawPrizeParam param);
 }

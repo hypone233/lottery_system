@@ -1,6 +1,7 @@
 package com.zzz.lotterysystem.dao.mapper;
 
 import com.zzz.lotterysystem.dao.dataobject.PrizeDO;
+import jakarta.validation.constraints.NotNull;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Service;
 
@@ -36,4 +37,7 @@ public interface PrizeMapper {
             " </foreach>" +
             " </script>")
     List<PrizeDO> batchSelectbyIds(@Param("items") List<Long> ids);
+
+    @Select("select * from prize where id = #{id}")
+    PrizeDO selectById( @Param("id")Long id);
 }

@@ -24,6 +24,7 @@ public interface ServiceErrorCodeConstants {
     ErrorCode USER_PRIZE_AMOUNT_ERROR = new ErrorCode(303,"活动关联奖品或人员数量设置异常");
     ErrorCode ACTIVITY_PRIZE_TIERS_ERROR = new ErrorCode(304,"活动奖品等级设置错误");
     ErrorCode ACTIVITY_STATUS_CONVERT_ERROR = new ErrorCode(305,"活动相关状态转换失败");
+    ErrorCode CACHE_ACTIVITY_ID_CONVERT_ERROR = new ErrorCode(306,"缓存的活动ID为空");
 
     //抽奖错误码
     ErrorCode ACTIVITY_OR_PRIZE_IS_EMPTY = new ErrorCode(400,"抽奖活动或关联奖品不存在");

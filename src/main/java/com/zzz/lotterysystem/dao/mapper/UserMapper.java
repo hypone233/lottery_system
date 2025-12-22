@@ -49,4 +49,13 @@ public interface UserMapper {
             " </foreach>" +
             " </script>")
     List<Long> selectExistById(@Param("items") List<Long> id);
+
+    @Select("<script>" +
+            " select * from user" +
+            " where id in" +
+            " <foreach item='item' collection='items' open='(' separator=',' close=')'>" +
+            " #{item}" +
+            " </foreach>" +
+            " </script>")
+    List<UserDO> batchSelectByIds(@Param("items") List<Long> ids);
 }

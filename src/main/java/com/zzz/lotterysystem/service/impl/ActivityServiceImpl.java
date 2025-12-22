@@ -167,6 +167,7 @@ public class ActivityServiceImpl implements ActivityService {
         }
         //如果不存在，通过表查询
 
+
         ActivityDO aDO = activityMapper.selectById(activityId);
 
         List<ActivityPrizeDO> apDOList = activityPrizeMapper.selectActivityId(activityId);
@@ -183,6 +184,37 @@ public class ActivityServiceImpl implements ActivityService {
 
         //返回
         return detailDTO;
+
+    }
+
+    @Override
+    public void cacheActivity(Long activityId) {
+
+        if(null == activityId){
+            logger.warn("要缓存的活动ID为空");
+            throw new ServiceException(ServiceErrorCodeConstants.CACHE_ACTIVITY_ID_CONVERT_ERROR);
+        }
+
+
+
+        ActivityDO aDO = activityMapper.selectById(activityId);
+        if(null == aDO){
+            logger.error("要缓存的活动ID有误");
+            throw new ServiceException(ServiceErrorCodeConstants.CACHE_ACTIVITY_ID_CONVERT_ERROR);
+        }
+
+        List<ActivityPrizeDO> apDOList = activityPrizeMapper.selectActivityId(activityId);
+
+        List<ActivityUserDO> auDOList = activityUserMapper.selectByActivityId(activityId);
+
+        List<Long> prizeIds = apDOList.stream()
+                .map(ActivityPrizeDO::getPrizeId)
+                .collect(Collectors.toList());
+        List<PrizeDO> pDOList = prizeMapper.batchSelectbyIds(prizeIds);
+        //整合活动信息，存放到redis
+        ActivityDetailDTO detailDTO = convertToactivityDetailDTO(aDO,auDOList,pDOList,apDOList);
+        cacheActivity(detailDTO);
+
 
     }
 
