@@ -18,10 +18,10 @@ public interface ActivityPrizeMapper {
     @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
     int batchInsert(@Param("items") List<ActivityPrizeDO> activityPrizeDOList);
 
-    @Select("select * from activity_prize where acticity_id = #{activityId}")
+    @Select("select * from activity_prize where activity_id = #{activityId}")
     List<ActivityPrizeDO> selectActivityId(Long activityId);
 
-    @Select("select * from activity_prize where acticity_id = #{activityId} and prize_id = #{prizeId}")
+    @Select("select * from activity_prize where activity_id = #{activityId} and prize_id = #{prizeId}")
     ActivityPrizeDO selectByAPId(@Param("activityId") Long activityId,
                                  @Param("prizeId") Long prizeId);
 

@@ -9,6 +9,7 @@ import com.zzz.lotterysystem.controller.param.DrawPrizeParam;
 import com.zzz.lotterysystem.dao.dataobject.ActivityPrizeDO;
 import com.zzz.lotterysystem.dao.dataobject.WinningRecordDO;
 import com.zzz.lotterysystem.dao.mapper.ActivityPrizeMapper;
+import com.zzz.lotterysystem.dao.mapper.WinningRecordMapper;
 import com.zzz.lotterysystem.service.DrawPrizeService;
 import com.zzz.lotterysystem.service.activitystatus.ActivityStatusManager;
 import com.zzz.lotterysystem.service.dto.ConvertActivityStatusDTO;
@@ -16,6 +17,7 @@ import com.zzz.lotterysystem.service.enums.ActivityPrizeStatusEnum;
 import com.zzz.lotterysystem.service.enums.ActivityPrizeTiersEnum;
 import com.zzz.lotterysystem.service.enums.ActivityStatusEnum;
 import com.zzz.lotterysystem.service.enums.ActivityUserStatusEnum;
+import io.lettuce.core.ScriptOutputType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
@@ -51,6 +53,8 @@ public class MqReceiver {
     private MailUtil mailUtil;
     @Autowired
     private ActivityPrizeMapper activityPrizeMapper;
+    @Autowired
+    private WinningRecordMapper winningRecordMapper;
 
     @RabbitHandler
     public void process(Map<String,String> message){
@@ -63,7 +67,9 @@ public class MqReceiver {
         //处理抽奖流程
         try{
             //校验抽奖结果有效
-            drawPrizeService.checkDrawPrizeParam(param);
+            if (!drawPrizeService.checkDrawPrizeParam(param)) {
+                return;
+            }
             //状态扭转处理
             statusConvert(param);
             //保存中奖者名单
@@ -102,6 +108,7 @@ public class MqReceiver {
             return;
         }
         //需要
+
         rollbackStatus(param);
 
         //回滚中奖者名单
@@ -111,14 +118,18 @@ public class MqReceiver {
             return;
         }
         //需要
+
         rollbackWinner(param);
     }
 
     private void rollbackWinner(DrawPrizeParam param) {
+        drawPrizeService.deleteRecords(param.getActivityId(), param.getPrizeId());
     }
 
     private boolean winnerNeedRollback(DrawPrizeParam param) {
-        return false;
+        int count = winningRecordMapper.countByAPId(param.getActivityId(),param.getPrizeId());
+        return count>0;
+
     }
 
     private void rollbackStatus(DrawPrizeParam param) {
@@ -133,11 +144,11 @@ public class MqReceiver {
                         .collect(Collectors.toList())
         );
         convertActivityStatusDTO.setTargetUserStatus(ActivityUserStatusEnum.INIT);
-        activityStatusManager.rollbackHandlerEvent();
+        activityStatusManager.rollbackHandlerEvent(convertActivityStatusDTO);
 
 
 
-        activityStatusManager.rollbackHandlerEvent();
+
 
     }
 

@@ -19,9 +19,14 @@ public interface DrawPrizeService {
 
 
 
-    void checkDrawPrizeParam(DrawPrizeParam param);
+    Boolean checkDrawPrizeParam(DrawPrizeParam param);
 
 
 
     List<WinningRecordDO> saveWinnerRecords(DrawPrizeParam param);
+
+    /*
+    删除活动奖品中奖记录
+     */
+    void deleteRecords(Long activityId,Long prizeId);
 }

@@ -61,7 +61,7 @@ public class DrawPrizeServiceImpl implements DrawPrizeService {
     }
 
     @Override
-    public void checkDrawPrizeParam(DrawPrizeParam param) {
+    public Boolean checkDrawPrizeParam(DrawPrizeParam param) {
 
         ActivityDO activityDO = activityMapper.selectById(param.getActivityId());
 
@@ -71,23 +71,36 @@ public class DrawPrizeServiceImpl implements DrawPrizeService {
         //活动或奖品是否存在
 
         if(null == activityDO || null == activityPrizeDO){
-            throw new ServiceException(ServiceErrorCodeConstants.ACTIVITY_OR_PRIZE_IS_EMPTY);
+            //throw new ServiceException(ServiceErrorCodeConstants.ACTIVITY_OR_PRIZE_IS_EMPTY);
+            logger.info("校验抽奖请求失败！失败原因:{}",
+                    ServiceErrorCodeConstants.ACTIVITY_OR_PRIZE_IS_EMPTY.getMsg());
+            return false;
         }
 
         //活动是否有效
         if(activityDO.getStatus()
                 .equalsIgnoreCase(ActivityStatusEnum.COMPLETED.name())){
-            throw new ServiceException(ServiceErrorCodeConstants.ACTIVITY_COMPLETED);
+            //throw new ServiceException(ServiceErrorCodeConstants.ACTIVITY_COMPLETED);
+            logger.info("校验抽奖请求失败！失败原因:{}",
+                    ServiceErrorCodeConstants.ACTIVITY_COMPLETED.getMsg());
+            return false;
         }
         //奖品是否有效
         if(activityPrizeDO.getStatus()
                 .equalsIgnoreCase(ActivityPrizeStatusEnum.COMPLETED.name())){
-            throw new ServiceException(ServiceErrorCodeConstants.ACTIVITY_PRIZE_COMPLETED);
+            //throw new ServiceException(ServiceErrorCodeConstants.ACTIVITY_PRIZE_COMPLETED);
+            logger.info("校验抽奖请求失败！失败原因:{}",
+                    ServiceErrorCodeConstants.ACTIVITY_PRIZE_COMPLETED.getMsg());
+            return false;
         }
         //中奖人数是否和设置奖品数一致
         if(activityPrizeDO.getPrizeAmount() != param.getWinnerList().size()){
-            throw new ServiceException(ServiceErrorCodeConstants.WINNER_PRIZE_AMOUNT_ERROR);
+            //throw new ServiceException(ServiceErrorCodeConstants.WINNER_PRIZE_AMOUNT_ERROR);
+            logger.info("校验抽奖请求失败！失败原因:{}",
+                    ServiceErrorCodeConstants.WINNER_PRIZE_AMOUNT_ERROR.getMsg());
+            return false;
         }
+        return true;
     }
 
     @Override
@@ -136,6 +149,34 @@ public class DrawPrizeServiceImpl implements DrawPrizeService {
                     WINNING_RECORDS_TIMEOUT);
         }
         return winningRecordDOList;
+
+    }
+
+    @Override
+    public void deleteRecords(Long activityId, Long prizeId) {
+
+        if(null == activityId || null == prizeId){
+            logger.warn("要删除的中奖记录相关活动Id或奖品为空");
+        }
+        //删除数据库表
+        winningRecordMapper.deleteRecords(activityId,prizeId);
+        //删除缓存
+        if(null != prizeId){
+            deleteWinningRecords(activityId+"_"+prizeId);
+        }
+        deleteWinningRecords(String.valueOf(activityId));
+
+    }
+
+    private void deleteWinningRecords(String key) {
+
+        try {
+            if(redisUtil.hasKey(WINNING_RECORDS_PREFIX+key)){
+                redisUtil.del(WINNING_RECORDS_PREFIX+key);
+            }
+        }catch (Exception e){
+            logger.error("删除中奖记录缓存异常，key:{}",key);
+        }
 
     }
 
