@@ -7,11 +7,12 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @Data
-public class DrawPrizeParam {
+public class DrawPrizeParam  {
 
     @NotNull(message = "活动id不能为空")
     private Long activityId;
@@ -30,7 +31,7 @@ public class DrawPrizeParam {
     private List<Winner> winnerList;
 
     @Data
-    public static class Winner{
+    public static class Winner {
         @NotNull(message = "中奖者id不能为空")
         private Long userId;
 

@@ -76,10 +76,10 @@ public class ActivityController {
         GetActivityDetailResult result = new GetActivityDetailResult();
         result.setActivityID(detailDTO.getActivityID());
         result.setActivityName(detailDTO.getActivityName());
-        result.setDesc(detailDTO.getDesc());
+        result.setDescription(detailDTO.getDesc());
         result.setValid(detailDTO.valid());
 
-        result.setPrizeDTOList(
+        result.setPrizes(
                 detailDTO.getPrizeDTOList().stream()
                         .sorted(Comparator.comparingInt(prizeDTO->prizeDTO.getTiers().getCode()))
                         .map(   prizeDTO -> {
@@ -89,7 +89,7 @@ public class ActivityController {
                             prize.setImageUrl(prizeDTO.getImageUrl());
                             prize.setPrice(prizeDTO.getPrice());
                             prize.setDescription(prizeDTO.getDescription());
-                            prize.setTiers(prizeDTO.getTiers().getMessage());
+                            prize.setPrizeTierName(prizeDTO.getTiers().getMessage());
                             prize.setPrizeAmount(prizeDTO.getPrizeAmount());
                             prize.setValid(prizeDTO.valid());
 
@@ -97,7 +97,7 @@ public class ActivityController {
                         }).collect(Collectors.toList())
         );
 
-        result.setUserDTOList(
+        result.setUsers(
                 detailDTO.getUserDTOList().stream()
                         .map(userDTO -> {
                             GetActivityDetailResult.User user = new GetActivityDetailResult.User();

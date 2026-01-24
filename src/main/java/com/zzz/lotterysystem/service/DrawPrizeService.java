@@ -3,7 +3,9 @@ package com.zzz.lotterysystem.service;
 
 import com.zzz.lotterysystem.controller.param.DrawPrizeParam;
 
+import com.zzz.lotterysystem.controller.param.ShowWinningRecordsParam;
 import com.zzz.lotterysystem.dao.dataobject.WinningRecordDO;
+import com.zzz.lotterysystem.service.dto.WinningRecordDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,4 +31,6 @@ public interface DrawPrizeService {
     删除活动奖品中奖记录
      */
     void deleteRecords(Long activityId,Long prizeId);
+
+    List<WinningRecordDTO> getRecords(ShowWinningRecordsParam param);
 }

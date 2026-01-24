@@ -19,17 +19,17 @@ public class GetActivityDetailResult implements Serializable {
 
     private String activityName;
 
-    private String desc;
+    private String description;
 
     private Boolean valid;
 
 
 
     //奖品信息
-    private List<Prize> prizeDTOList;
+    private List<Prize> prizes;
 
     //人员信息
-    private List<User> userDTOList;
+    private List<User> users;
 
 
 
@@ -63,7 +63,7 @@ public class GetActivityDetailResult implements Serializable {
          * 奖品等级
          * @see ActivityPrizeTiersEnum#getMessage()
          */
-        private String tiers;
+        private String prizeTierName;
 
         /**
          * 奖品数量

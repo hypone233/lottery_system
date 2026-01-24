@@ -31,7 +31,8 @@ public class AppConfig implements WebMvcConfigurer {
             "/activity/create",
             "/prize/create",
             "/activity/find-list",
-            "/activity-detail/find"
+            "/activity-detail/find",
+            "/winning-records/show"
 
 
 
