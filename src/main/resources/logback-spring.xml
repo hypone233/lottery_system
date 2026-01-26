@@ -54,11 +54,8 @@
             <File>${logback.logInfoDir}/info.log</File>
 
             <!-- 过滤器：记录INFO及以上（可自定义实现） -->
-            <filter class="ch.qos.logback.classic.filter.LevelFilter">
-                <level>INFO</level>
-                <onMatch>ACCEPT</onMatch>
-                <onMismatch>DENY</onMismatch>
-            </filter>
+            <filter class="com.zzz.lotterysystem.common.filter.InfoLevelFilter"/>
+
 
             <!-- 滚动策略 -->
             <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
