@@ -116,7 +116,13 @@
 </head>
 <body>
 <div class=" prize-table">
-    <h2>奖品列表</h2>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
+        <h2 style="margin: 0; font-size: 24px; font-weight: 700;">奖品列表</h2>
+        <button class="btn btn-primary" onclick="window.parent.location.href='/admin.html'" style="width: auto; height: auto; padding: 10px 20px; font-size: 14px; margin: 0; background-color: var(--primary-color); border: none; display: flex; align-items: center; gap: 6px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            返回管理后台
+        </button>
+    </div>
     <div class="table-box">
       <table class="table">
         <thead>
