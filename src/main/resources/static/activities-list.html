@@ -7,108 +7,127 @@
   <link rel="stylesheet" href="./css/base.css">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f2f2f2;
+      background-color: var(--bg-main);
+      padding: 24px;
     }
     .activity-list {
-      padding:0 30px;
+      max-width: 1000px;
+      margin: 0 auto;
     }
-    #activities{
-      height: calc(100vh - 134px);
-      overflow-y: auto;
-      padding-right: 10px;
-    }
-    .activity-item {
+    .page-header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      background-color: #f7f7f7;
-      padding: 24px;
-      border-radius: 4px;
-      overflow: hidden;
-      margin-bottom: 10px;
-      border-radius: 8px;
-      padding-bottom: 12px;
+      align-items: center;
+      margin-bottom: 24px;
     }
-    .activity-info{
-      width: calc(100% - 120px);
+    .page-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-main);
     }
-    .activity-info h4{
-      width: 100%;
+    #activities {
+      display: grid;
+      gap: 16px;
+    }
+    .activity-card {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: var(--transition);
+    }
+    .activity-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary-color);
+    }
+    .activity-info h4 {
+      font-size: 18px;
       font-weight: 600;
-      font-size: 15px;
-      color: #000000;
+      color: var(--text-main);
       margin-bottom: 4px;
     }
-    .activity-info p{
-      font-weight: 400;
+    .activity-info p {
       font-size: 14px;
-      color: #666666;
+      color: var(--text-muted);
       margin: 0;
-      line-height: 28px;
     }
-    .active a{
-      font-weight: 400;
-      font-size: 15px;
-      color: red;
-      margin-bottom: 0;
-      display: block;
-      width: 250px;
-    }
-    .inactive a{
-      font-weight: 400;
-      font-size: 15px;
-      color: gray;
-      margin-bottom: 0;
-      display: block;
-      width: 250px;
-    }
-    .pagination {
-      display: flex;
-      justify-content: flex-end;
-      margin-top: 18px;
-      padding-right: 16px;
-    }
-    .pagination button {
-      margin: 0 5px; /* 按钮之间的间距保持不变 */
-      border-radius: 5px; /* 设置圆角为20像素，可以根据需要调整 */
-      border: 1px solid #007bff;
-      background-color: #fff;
-      padding: 0px 8px; /* 可以添加一些内边距，使按钮看起来更饱满 */
-      cursor: pointer; /* 将鼠标光标改为指针形状，提升用户体验 */
-      font-size: 13px;
-    }
-    .pagination span{
-      margin: 0 10px;
-      font-size: 14px;
-    }
-    .pagination input{
-      width: 80px;
-      text-align: center;
-    }
-    .activity-list h2 {
+    .status-badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
       font-weight: 600;
-      font-size: 18px;
-      color: #000000;
-      height: 70px;
+      text-transform: uppercase;
+    }
+    .status-active {
+      background: #dcfce7;
+      color: #166534;
+    }
+    .status-inactive {
+      background: #f1f5f9;
+      color: #475569;
+    }
+    .action-link {
+      color: var(--primary-color);
+      font-weight: 500;
+      font-size: 14px;
       display: flex;
       align-items: center;
-      margin-bottom: 0;
+      gap: 4px;
+    }
+    .pagination {
+      margin-top: 32px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+    }
+    .pagination button {
+      background: var(--white);
+      border: 1px solid var(--border-color);
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      color: var(--text-main);
+      font-size: 14px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .pagination button:hover:not(:disabled) {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+    }
+    .pagination input {
+      width: 50px;
+      padding: 8px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      text-align: center;
+      font-size: 14px;
     }
   </style>
 </head>
-<body style="background-color: white">
-<div class="activity-list">
-  <h2>活动列表</h2>
+<body>
+<div class="activity-list fade-in">
+  <div class="page-header">
+    <h2 class="page-title">抽奖活动管理</h2>
+  </div>
   <div id="activities">
     <!-- 活动列表将动态插入这里 -->
   </div>
   <div class="pagination">
-    <button class="btn-outline-primary" onclick="fetchActivities(1)">首页</button>
-    <button class="btn-outline-primary" onclick="previousPage()">上一页</button>
-    <span>第 <input type="number" id="pageInput" min="1" value="1" /> 页</span>
-    <button class="btn-outline-primary" onclick="nextPage()">下一页</button>
-    <button class="btn-outline-primary" onclick="fetchActivities(totalPages)">尾页</button>
+    <button onclick="fetchActivities(1)">首页</button>
+    <button onclick="previousPage()">上一页</button>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span>第</span>
+      <input type="number" id="pageInput" min="1" value="1" />
+      <span>页</span>
+    </div>
+    <button onclick="nextPage()">下一页</button>
+    <button onclick="fetchActivities(totalPages)">尾页</button>
   </div>
 </div>
 
@@ -120,72 +139,52 @@
     var totalPages;
     var userToken = localStorage.getItem("user_token");
 
-    // 发送AJAX请求的函数
     function fetchActivities(page) {
-      // 如果页码小于1，则重置为1
-      if (page < 1) {
-        page = 1;
-      }
-      // 更新当前页码
+      if (page < 1) page = 1;
       currentPage = page;
-      // 构建要发送的数据对象
-      var dataToSend = {
-        currentPage: currentPage,
-        pageSize: pageSize
-      };
-      // 发送AJAX请求
+      
       $.ajax({
           url: '/activity/find-list',
           type: 'GET',
-          data: dataToSend, // 将分页参数作为请求数据发送
+          data: { currentPage: currentPage, pageSize: pageSize },
           dataType: 'json',
-          headers: {
-            // jwt
-            "user_token":userToken
-          },
+          headers: { "user_token": userToken },
           success: function(result) {
             if (result.code != 200) {
                 alert("查询活动列表失败！" + result.msg);
             } else {
-                var activities = result.data.records; // 假设返回的数据中活动列表字段为 'records'
+                var activities = result.data.records;
                 var activitiesHtml = '';
-                var listContainer = document.getElementById('activities');
-                // 在添加新内容前，先清空listContainer
-                listContainer.innerHTML = '';
                 activities.forEach(function(activity) {
                   var url = 'draw.html?activityName='+ encodeURIComponent(activity.activityName)
                           +'&activityId=' + encodeURIComponent(activity.activityId)
                           +'&valid=' + encodeURIComponent(activity.valid);
-                  var linkTextActive = `<a href="${url}" target="_blank">活动进行中，去抽奖</a>`;
-                  var linkTextInactive = `<a href="${url}" target="_blank">活动已完成，查看中奖名单</a>`;
-                  var validClass = activity.valid ? 'active' : 'inactive';
-                  var link = activity.valid ? linkTextActive : linkTextInactive;
+                  
+                  var statusLabel = activity.valid ? '进行中' : '已结束';
+                  var statusClass = activity.valid ? 'status-active' : 'status-inactive';
+                  var actionText = activity.valid ? '去抽奖 →' : '查看结果 →';
+
                   activitiesHtml += `
-                      <div class="activity-item">
+                      <div class="activity-card">
                         <div class="activity-info">
-                          <h4>${activity.activityName}</h4>
-                          <p>${activity.description}</p>
+                          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 4px;">
+                            <h4>${activity.activityName}</h4>
+                            <span class="status-badge ${statusClass}">${statusLabel}</span>
+                          </div>
+                          <p>${activity.description || '暂无描述'}</p>
                         </div>
-                        <div class="${validClass}">
-                          <p>${link}</p>
-                        </div>
+                        <a href="${url}" target="_blank" class="action-link">${actionText}</a>
                       </div>
                     `;
                 });
                 $('#activities').html(activitiesHtml);
-                // 更新分页控件的总页数
                 totalPages = Math.ceil(result.data.total / pageSize);
-                // 更新输入框的值
                 $('#pageInput').val(currentPage);
-              } // else end
+              }
           },
-        error:function(err){
-          console.log(err);
-          if(err!=null && err.status==401){
-            alert("用户未登录, 即将跳转到登录页!");
-            // 跳转登录页
-            window.location.href = "/blogin.html";
-            window.parent.location.href = "/blogin.html";//让父页面一起跳转
+        error: function(err) {
+          if(err && err.status == 401) {
+            window.parent.location.href = "/blogin.html";
           }
         }
       });
